@@ -14,6 +14,8 @@ define change_window::apply(
   $change_window_set,
   $class_list,
 ) {
+  #Notify Module version
+  notify{ "Version 1.0": }
   # Validate arguments
   validate_array($change_window_set)
   validate_array($class_list)
@@ -22,7 +24,7 @@ define change_window::apply(
   debug("change_window_set = ${change_window_set}")
 
   # Set noop() when not "whithin" the change_window
-  if  !str2bool(merge_change_windows($change_window_set)) {
+  if  !str2bool(change_window::merge_change_windows($change_window_set)) {
     debug('not in change_window')
     notify{ "#{${title}} not in change_windows #{${change_window_set}}, setting noop() mode.": }
     noop()
