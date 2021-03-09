@@ -32,15 +32,35 @@ pass_wrap_time_end   = {'start' => '11:00', 'end' => '06:15'} # Wrap includes en
 pass_all_times       = {'start' => '00:00', 'end' => '23:59'} # All times valid
 fail_time_format     = {'start' => '0000', 'end' => '2359'}   # Times missing colon (:)
 
-# Test weeks and months
+# Test weeks
 all_weeks = [1,2,3,4,5]
+pass_week = [2] # 6th Jan 2016 = Week 2
+fail_week = [1] # 6th Jan 2016 = Week 2
+fail_weeks_non_array = 'foo'
+fail_weeks_array_strings =  ['foo']
+fail_weeks_array_float = [1.2]
+fail_weeks_array_range_zero = [0,1] # is invalid
+fail_weeks_array_range_high = [5,6] # 6 is invalid
+pass_weeks_array_empty = []
+pass_weeks_duplicates = [1,2,3,1]
+
+# Test months
 all_months = [1,2,3,4,5,6,7,8,9,10,11,12]
-fail_months = [2]
-fail_months_range = ['2-4']
+fail_months = [2] # time not in range
+fail_months_range = ['2-4'] # time not in range
 pass_months = [1]
 pass_months_range = ['1-2']
+pass_months_with_duplicates = [1,2,3,4,'1-2']
+fail_month_format_string_array = ['foo']
 fail_month_format_string = 'foo'
-fail_month_format_float = 1.2
+fail_month_format_float = [1.2]
+fail_month_invalid_month_zero = [0]
+fail_month_invalid_month_high = [13]
+fail_month_invalid_range_zero = ['0-1']
+fail_month_invalid_range_high = ['12-13']
+fail_month_invalid_range = ['0-0']
+fail_month_range_inverted = ['11-1'] # start must be before end of range
+pass_month_empty_array = []
 
 describe 'change_window::change_window' do
   # Test for parseError's
@@ -90,7 +110,7 @@ describe 'change_window::change_window' do
   it { is_expected.to run.with_params(tz, 'per_day', pass_wndw_day,  fail_wndw_time, all_weeks, all_months,       time).and_return("false") }
   it { is_expected.to run.with_params(tz, 'per_day', pass_start_day, pass_wrap_time_start, all_weeks, all_months, time).and_return("true") }
   it { is_expected.to run.with_params(tz, 'per_day', pass_end_day,   pass_wrap_time_end, all_weeks, all_months,   time).and_return("true") }
-  # Test month-of-year
+  # Test month of year
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, all_months, time).and_return("true")}
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, pass_months, time).and_return("true")}
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, pass_months_range, time).and_return("true")}
@@ -98,5 +118,24 @@ describe 'change_window::change_window' do
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_months_range, time).and_return("false")}
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_month_format_string, time).and_raise_error(Puppet::ParseError) }
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_month_format_float, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, pass_months_with_duplicates, time).and_return("true") }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_month_format_string_array, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_month_invalid_month_zero, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_month_invalid_month_high, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_month_invalid_range_zero, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_month_invalid_range_high, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_month_invalid_range, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_month_range_inverted, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, pass_month_empty_array, time).and_return("false") }
+  # Test week of month
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, pass_week, all_months, time).and_return("true")}
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, fail_week, all_months, time).and_return("false")}
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, fail_weeks_non_array, all_months, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, fail_weeks_array_strings, all_months, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, fail_weeks_array_float, all_months, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, fail_weeks_array_range_zero, all_months, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, fail_weeks_array_range_high, all_months, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, pass_weeks_array_empty, all_months, time).and_return("false")}
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, pass_weeks_duplicates, all_months, time).and_return("true")}
 
 end

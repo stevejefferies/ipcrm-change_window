@@ -80,8 +80,12 @@ Puppet::Functions.create_function(:'change_window::change_window') do
         raise Puppet::ParseError, "window_month must be an array of integers or strings"
       end
       args[5].each do |val|
-        if (val.is_a?(Integer) && val.between?(1,12))
-          window_month.push(val)
+        if val.is_a?(Integer)
+          if val.between?(1,12)
+            window_month.push(val)
+          else
+            raise Puppet::ParseError, "window_month values must be between 1 and 12"
+          end
         end
         if val.is_a?(String)
           range = val.split('-')
@@ -184,12 +188,12 @@ Puppet::Functions.create_function(:'change_window::change_window') do
     if args.length != 7
       t = Time.now.getlocal(timezone)
     else
-      raise Puppet::ParseError, "Invalid key for time expected 5 values and received #{args[4].length}" unless args[4].length == 5
+      raise Puppet::ParseError, "Invalid key for time expected 5 values and received #{args[6].length}" unless args[6].length == 5
       begin
         t = Time.new( *args[6], 0, timezone)
       rescue Exception
         # Catch exception and rebrand as parse error
-        raise Puppet::ParseError, "Could not convert time array into valid Time.new object, received #{args[4].to_a}"
+        raise Puppet::ParseError, "Could not convert time array into valid Time.new object, received #{args[6].to_a}"
       end
     end
 
