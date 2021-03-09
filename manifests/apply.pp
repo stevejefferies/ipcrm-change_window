@@ -3,7 +3,7 @@ define change_window::apply(
   $class_list,
 ) {
   #Notify Module version
-  notify{ "Version 1.0": }
+  notify{ 'Version 1.0': }
   # Validate arguments
   validate_array($change_window_set)
   validate_array($class_list)

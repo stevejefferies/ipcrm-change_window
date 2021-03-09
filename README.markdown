@@ -190,6 +190,11 @@ if merge_change_windows($change_windows) == 'false' {
 }
 ```
 
+## Acknowledgements
+
+- window_week functionality is provided through an extension which is a modified version of
+  [week-of-month](https://github.com/sachin87/week-of-month)
+
 ## Development
 
 Contributing via the normal means(fork/PR - add your tests!).

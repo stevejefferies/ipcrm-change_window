@@ -34,5 +34,4 @@ group :system_tests do
   gem "beaker-puppet_install_helper"
 end
 
-gem "week_of_month", "~> 1.2"
 gem "coveralls"

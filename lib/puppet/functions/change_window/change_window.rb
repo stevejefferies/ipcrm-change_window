@@ -1,5 +1,6 @@
-require 'date'
-require 'week_of_month'
+require_relative 'month_extension.rb'
+
+Time.include TimeExtensions::Time::Month
 
 # @summary
 #   Provides change_window function that allows you to check current time against change window
@@ -39,7 +40,7 @@ Puppet::Functions.create_function(:'change_window::change_window') do
     # args[6] String, Point-in-time to test (optional)
 
     # Configure start of week to be monday
-    WeekOfMonth.configuration.monday_active = true
+    #WeekOfMonth.configuration.monday_active = true
 
     # Validate Arguments are all present
     raise Puppet::ParseError, "Invalid argument count, got #{args.length} expected 4 or 5" unless (4..7).cover?(args.length)
@@ -210,7 +211,7 @@ Puppet::Functions.create_function(:'change_window::change_window') do
     if window_month.include?(t.month)
 
       # Determine if we are within a valid week
-      if window_week.include?(Date.parse(t.to_s).week_of_month)
+      if window_week.include?(t.week_of_month)
 
         # Determine if today is within the valid days for the change window
         if valid_days.include?(t.wday)
