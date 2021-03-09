@@ -43,8 +43,8 @@ fail_parse_bad_cw_entry = [ tz, 'window', pass_all_days, pass_all_times, all_wee
 describe 'change_window::merge_change_windows' do
   # Test for parseError's
   it { is_expected.not_to eq(nil) }
-  it { is_expected.to run.with_params().and_raise_error(Puppet::ParseError) }
-  it { is_expected.to run.with_params(1).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params().and_raise_error(ArgumentError) }
+  it { is_expected.to run.with_params(1).and_raise_error(ArgumentError) }
   it { is_expected.to run.with_params(fail_parse_bad_cw_args).and_raise_error(Puppet::ParseError) }
   it { is_expected.to run.with_params(fail_parse_bad_cw_entry).and_raise_error(Puppet::ParseError) }
 

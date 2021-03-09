@@ -65,13 +65,18 @@ pass_month_empty_array = []
 describe 'change_window::change_window' do
   # Test for parseError's
   it { is_expected.not_to eq(nil) }
-  it { is_expected.to run.with_params().and_raise_error(Puppet::ParseError) }
-  it { is_expected.to run.with_params(1).and_raise_error(Puppet::ParseError) }
-  it { is_expected.to run.with_params(tz, fail_wndw_type, pass_all_days, all_weeks, all_months, pass_wndw_time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params().and_raise_error(ArgumentError) }
+  it { is_expected.to run.with_params(1).and_raise_error(ArgumentError) }
+  it { is_expected.to run.with_params(tz, fail_wndw_type, pass_all_days, all_weeks, all_months, pass_wndw_time).and_raise_error(ArgumentError) }
   it { is_expected.to run.with_params(tz,'window', pass_all_days,pass_all_times, all_weeks, all_months, [2016,1,6,6,60]).and_raise_error(Puppet::ParseError) }
   it { is_expected.to run.with_params(tz,'window', fail_key_day,pass_all_times, all_weeks, all_months, time).and_raise_error(Puppet::ParseError) }
   it { is_expected.to run.with_params(tz,'window', pass_all_days,fail_key_time).and_raise_error(Puppet::ParseError) }
   it { is_expected.to run.with_params(tz,'window', pass_all_days,fail_time_format).and_raise_error(Puppet::ParseError) }
+  # Test optional args
+  it { is_expected.to run.with_params(tz,'window', pass_all_days, pass_all_times) }
+  it { is_expected.to run.with_params(tz,'window', pass_all_days, pass_all_times, all_weeks) }
+  it { is_expected.to run.with_params(tz,'window', pass_all_days, pass_all_times, all_weeks, all_months) }
+  # String days
   it { is_expected.to run.with_params(tz,'window', fail_string_days,pass_all_times).and_raise_error(Puppet::ParseError) }
   it { is_expected.to run.with_params(tz,'window', pass_string_days,pass_all_times, all_weeks, all_months, time).and_return("true") }
   # Test day-of-week (window)
@@ -116,7 +121,7 @@ describe 'change_window::change_window' do
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, pass_months_range, time).and_return("true")}
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_months, time).and_return("false")}
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_months_range, time).and_return("false")}
-  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_month_format_string, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_month_format_string, time).and_raise_error(ArgumentError) }
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_month_format_float, time).and_raise_error(Puppet::ParseError) }
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, pass_months_with_duplicates, time).and_return("true") }
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, all_weeks, fail_month_format_string_array, time).and_raise_error(Puppet::ParseError) }
@@ -130,7 +135,7 @@ describe 'change_window::change_window' do
   # Test week of month
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, pass_week, all_months, time).and_return("true")}
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, fail_week, all_months, time).and_return("false")}
-  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, fail_weeks_non_array, all_months, time).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, fail_weeks_non_array, all_months, time).and_raise_error(ArgumentError) }
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, fail_weeks_array_strings, all_months, time).and_raise_error(Puppet::ParseError) }
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, fail_weeks_array_float, all_months, time).and_raise_error(Puppet::ParseError) }
   it { is_expected.to run.with_params(tz, 'window', pass_all_days,  pass_all_times, fail_weeks_array_range_zero, all_months, time).and_raise_error(Puppet::ParseError) }
