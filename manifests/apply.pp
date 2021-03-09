@@ -1,15 +1,3 @@
-# Define: change_window::apply - given the name of a change_window_set,
-#    set noop() for list of classes
-##
-# where:
-#   $change_window_set = hiera key to window definitions
-#   $class_list        = Array of classes to place under control
-#
-#   $class_list[] may take one of two forms, a string with a class name to
-#    include or a hash suitable for create_resources().
-#       simple : simple_class
-#       complex: {'parameter_class' => {parm1 => 'xxx', parm2 => 'yyy'}}
-##
 define change_window::apply(
   $change_window_set,
   $class_list,
