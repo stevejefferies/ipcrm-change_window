@@ -50,13 +50,13 @@ Puppet::Functions.create_function(:'change_window::change_window') do
     # If window, we'll expect that the window is continuous - from start day, start time through end day, end time.
     window_type = window_type.nil? ? 'window' : window_type
 
-    if !['window','per_day'].include?(window_type)
+    unless %w[window per_day].include?(window_type)
       raise Puppet::ParseError, "Window type must be 'window' or 'per_day'"
     end
 
     ## Setup months in year
     window_month = []
-    if not (window_month_val.all? {|month| month.is_a?(Integer) || month.is_a?(String)})
+    unless window_month_val.all? { |month| month.is_a?(Integer) || month.is_a?(String) }
       raise Puppet::ParseError, "window_month must be an array of integers or strings"
     end
     window_month_val.each do |val|
@@ -69,15 +69,15 @@ Puppet::Functions.create_function(:'change_window::change_window') do
       end
       if val.is_a?(String)
         range = val.split('-')
-        if not range.length == 2
+        unless range.length == 2
           raise Puppet::ParseError, "window_month values must be integers or string ranges in the form '1-3'"
         end
         start_month = convert_string_to_int(range[0])
         end_month = convert_string_to_int(range[1])
-        if not (start_month <= end_month)
+        unless start_month <= end_month
           raise Puppet::ParseError, "window_month range start month must be <= end month"
         end
-        if not (start_month.between?(1,12) && end_month.between?(1,12))
+        unless start_month.between?(1, 12) && end_month.between?(1, 12)
           raise Puppet::ParseError, "window_month range must be between 1 and 12"
         end
         (start_month..end_month).each do |v|
@@ -90,11 +90,11 @@ Puppet::Functions.create_function(:'change_window::change_window') do
 
     ## Setup weeks in month
     # Validate weeks provided are valid
-    if not (window_week_val.all? {|week| week.is_a?(Integer)})
+    unless window_week_val.all? { |week| week.is_a?(Integer) }
       raise Puppet::ParseError, "window_week must be an array of integers"
     end
     #Validate weeks are within valid range
-    if not (window_week_val.all? {|week| week.between?(1,6)})
+    unless window_week_val.all? { |week| week.between?(1, 6) }
       raise Puppet::ParseError, "window_weeks values must be between 1-6"
     end
 
@@ -105,7 +105,7 @@ Puppet::Functions.create_function(:'change_window::change_window') do
     ## Setup the days of the week hash
     # First, validate that we got the keys we expect
     window_wday.keys.each { |ww|
-      if not ['start','end'].include?(ww)
+      unless %w[start end].include?(ww)
         raise Puppet::ParseError, "The window_wday hash can include start and end only! Invalid value passed - #{ww}"
       end
     }
@@ -128,11 +128,11 @@ Puppet::Functions.create_function(:'change_window::change_window') do
 
     # One more validation - did we lookup valid values?
     window_wday_int.keys.each { |wi|
-      if !window_wday_int[wi].is_a? Integer
+      unless window_wday_int[wi].is_a? Integer
         raise Puppet::ParseError, "Invalid day found in supplied window days"
       end
 
-      if !(0..6).cover?(window_wday_int[wi])
+      unless (0..6).cover?(window_wday_int[wi])
         raise Puppet::ParseError, "Supplied weekday number is out of range (i.e. not 0-6) - value found #{window_wday_int[wi]}"
       end
     }
@@ -143,11 +143,11 @@ Puppet::Functions.create_function(:'change_window::change_window') do
 
     # Validate we got a usable time hash provided
     window_time.keys.each { |ts|
-      if not ['start','end'].include?(ts)
+      unless %w[start end].include?(ts)
         raise Puppet::ParseError, "Invalid key provided for window_time. Only start/end supported - found #{ts}"
       end
 
-      if not window_time[ts] =~ /^\d(\d)?\:\d\d$/
+      unless window_time[ts] =~ /^\d(\d)?:\d\d$/
         raise Puppet::ParseError, "Invalid time supplied for window_time #{ts} - found #{window_time[ts]}"
       end
     }
