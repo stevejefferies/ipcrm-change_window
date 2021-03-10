@@ -3,7 +3,7 @@ require 'date'
 # @summary
 #   Creates complex change windows by merging a series of windows together
 Puppet::Functions.create_function(:'change_window::merge_change_windows') do
-  # @param args
+  # @param change_windows [Array] a list of change windows to merge
   #
   # @return [String]
   #   Returns true or false as string if the time is within the merged change window

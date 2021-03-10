@@ -5,7 +5,13 @@ Time.include TimeExtensions::Time::Month
 # @summary
 #   Provides change_window function that allows you to check current time against change window
 Puppet::Functions.create_function(:'change_window::change_window') do
-  # @param args
+  # @param timezone [String] the timezone offset to use when timestamp is generated for comparing to change window
+  # @param window_type [String] type of window, either 'per_day' or 'window'
+  # @param window_wday [Hash] containing start and end days of week for the change window
+  # @param window_time [Hash] containing start and end times of day for the change window
+  # @param window_week [Array] [Optional] list of weeks in month for the change window
+  # @param window_month [Array] [Optional] list of months in year for the change window
+  # @param time [Array] [Optional] array representing a fixed time to test against
   #
   # @return [String]
   #   Returns true or false as string if the time is within the change window
@@ -17,7 +23,6 @@ Puppet::Functions.create_function(:'change_window::change_window') do
     optional_param 'Array', :window_week_val
     optional_param 'Array', :window_month_val
     optional_param 'Array', :time
-    repeated_param 'Any', :args
   end
 
   def default_impl(timezone, window_type, window_wday, window_time, window_week_val=[1,2,3,4,5,6], window_month_val=[1,2,3,4,5,6,7,8,9,10,11,12], time=nil )
