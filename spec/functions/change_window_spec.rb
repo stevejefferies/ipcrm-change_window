@@ -33,14 +33,14 @@ pass_all_times       = {'start' => '00:00', 'end' => '23:59'} # All times valid
 fail_time_format     = {'start' => '0000', 'end' => '2359'}   # Times missing colon (:)
 
 # Test weeks
-all_weeks = [1,2,3,4,5]
+all_weeks = [1,2,3,4,5,6]
 pass_week = [2] # 6th Jan 2016 = Week 2
 fail_week = [1] # 6th Jan 2016 = Week 2
 fail_weeks_non_array = 'foo'
 fail_weeks_array_strings =  ['foo']
 fail_weeks_array_float = [1.2]
 fail_weeks_array_range_zero = [0,1] # is invalid
-fail_weeks_array_range_high = [5,6] # 6 is invalid
+fail_weeks_array_range_high = [6,7] # 6 is invalid
 pass_weeks_array_empty = []
 pass_weeks_duplicates = [1,2,3,1]
 

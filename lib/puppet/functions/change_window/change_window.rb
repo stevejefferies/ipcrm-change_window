@@ -20,7 +20,7 @@ Puppet::Functions.create_function(:'change_window::change_window') do
     repeated_param 'Any', :args
   end
 
-  def default_impl(timezone, window_type, window_wday, window_time, window_week_val=[1,2,3,4,5], window_month_val=[1,2,3,4,5,6,7,8,9,10,11,12], time=nil )
+  def default_impl(timezone, window_type, window_wday, window_time, window_week_val=[1,2,3,4,5,6], window_month_val=[1,2,3,4,5,6,7,8,9,10,11,12], time=nil )
     
     class << self
       def change_window_time_is_within(s,e,c)
@@ -89,8 +89,8 @@ Puppet::Functions.create_function(:'change_window::change_window') do
       raise Puppet::ParseError, "window_week must be an array of integers"
     end
     #Validate weeks are within valid range
-    if not (window_week_val.all? {|week| week.between?(1,5)})
-      raise Puppet::ParseError, "window_weeks values must be between 1-5"
+    if not (window_week_val.all? {|week| week.between?(1,6)})
+      raise Puppet::ParseError, "window_weeks values must be between 1-6"
     end
 
     window_week = window_week_val.uniq # remove duplicates
